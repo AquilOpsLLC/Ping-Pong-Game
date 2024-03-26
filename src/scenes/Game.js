@@ -12,6 +12,9 @@ class Game extends Phaser.Scene{
 
     preload(){
         this.load.addFile(new WebFontFile(this.load,'Press Start 2P'))
+        this.load.audio('pong-beeep','assets/beeep.mp3')
+        this.load.audio('pong-plop','assets/plop.mp3')
+
     }
 
     init(){
@@ -49,11 +52,12 @@ class Game extends Phaser.Scene{
 
         this.leftGamer= this.add.rectangle(50,250, 20, 100, 0xffffff, 1)
         this.physics.add.existing(this.leftGamer, true)
-        this.physics.add.collider(this.leftGamer, this.ball);
+        this.physics.add.collider(this.leftGamer, this.ball, this.ballCrash,undefined,this);
 
         this.rightGamer= this.add.rectangle(750,250, 20, 100, 0xffffff, 1)
         this.physics.add.existing(this.rightGamer, true)
-        this.physics.add.collider(this.rightGamer, this.ball);
+        this.physics.add.collider(this.rightGamer, this.ball, this.ballCrash,undefined,this);
+
 
         this.ball.body.setBounce(1,1);
         this.klavye = this.input.keyboard.createCursorKeys()
@@ -61,8 +65,22 @@ class Game extends Phaser.Scene{
 
         this.physics.world.setBounds(-100,0, 1000,500)
         this.resetBall()
+
+        this.ball.body.onWorldBounds=true
+        this.physics.world.on('worldBounds', this.ballWorldBounds, this)
     }
 
+    ballCrash(){
+        this.sound.play('pong-beeep')
+    }
+
+    ballWorldBounds(body, up ,down, left, right){
+        if(left || right){
+            return;
+        }
+
+        this.sound.play('pong-plop')
+    }
 
     resetBall(){
         this.ball.setPosition(400,200)

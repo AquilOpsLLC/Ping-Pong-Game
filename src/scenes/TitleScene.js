@@ -4,6 +4,7 @@ import WebFontFile from "./WebFontfile";
 class TitleScene extends Phaser.Scene{
     preload(){
         this.load.addFile(new WebFontFile(this.load, 'Press Start 2P'))
+        this.load.audio('pong-peeeeeep','assets/gamestart.mp3')
     }
 
     create(){
@@ -21,6 +22,7 @@ class TitleScene extends Phaser.Scene{
         }).setOrigin(0.5,0.5)
 
         this.input.keyboard.once('keydown-SPACE', ()=>{
+            this.sound.play('pong-peeeeeep')
             this.scene.start('game')
         })
     }
